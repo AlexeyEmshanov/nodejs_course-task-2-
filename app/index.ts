@@ -6,7 +6,7 @@ import _ from 'lodash';
 const app = express();
 const port = 3000;
 
-const storage: User[] = [];
+let storage: Array<User> = [];
 
 const defaultUser: User = {
   id: uuidv4(),
@@ -16,7 +16,15 @@ const defaultUser: User = {
   isDeleted: false
 };
 
-storage.push(defaultUser);
+const defaultUser2: User = {
+  id: '777',
+  login: 'newUser2',
+  password: 'newPassword2',
+  age: 27,
+  isDeleted: false
+};
+
+storage.push(defaultUser, defaultUser2);
 
 app.use(express.json()); //Body parser for requests
 
@@ -51,6 +59,23 @@ app.post('/createUser', (req, res) => {
       .json({message: "User entity couldn't be empty!"})
   }
 });
+
+app.patch('/users/:id', (req, res) => {
+  let requestedUserIndex = storage.findIndex(user => user.id === req.params.id);
+
+  if (requestedUserIndex > 0) {
+    storage[requestedUserIndex] = {
+      ...storage[requestedUserIndex],
+      ...req.body
+    }
+
+    res.json({message: `User with ID: ${req.params.id} was successfully updated!`})
+  } else {
+    res.status(400)
+      .json({message: `User with ID: ${req.params.id} doesn't exist`})
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`The application is running on ${port}`);
