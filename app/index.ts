@@ -76,6 +76,22 @@ app.patch('/users/:id', (req, res) => {
   }
 });
 
+app.delete('/users/:id', (req, res) => {
+  let requestedForDeleteUserIndex = storage.findIndex(user => user.id === req.params.id);
+
+  if (requestedForDeleteUserIndex > 0) {
+    storage[requestedForDeleteUserIndex] = {
+      ...storage[requestedForDeleteUserIndex],
+      isDeleted: true,
+    }
+
+    res.json({message: `User with ID: ${req.params.id} was successfully deleted!`})
+  } else {
+    res.status(400)
+      .json({message: `User with ID: ${req.params.id} doesn't exist. Deleting is impossible!`})
+  }
+})
+
 
 app.listen(port, () => {
   console.log(`The application is running on ${port}`);
