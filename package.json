@@ -20,6 +20,9 @@
   "dependencies": {
     "@babel/register": "^7.18.9",
     "express": "^4.18.1",
+    "express-joi-validation": "^5.0.1",
+    "joi": "^17.6.3",
+    "joi-extract-type": "^15.0.8",
     "lodash": "^4.17.21",
     "uuid": "^9.0.0"
   },

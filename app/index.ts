@@ -2,12 +2,17 @@ import express from "express";
 import { v4 as uuidv4 } from 'uuid';
 import User from "../types/user_type";
 import _ from 'lodash';
+import * as Joi from 'joi';
+import {ContainerTypes, ValidatedRequest, ValidatedRequestSchema, createValidator} from "express-joi-validation";
 
 const app = express();
 const port = 3000;
+app.listen(port, () => {
+  console.log(`The application is running on ${port}`);
+});
 
+//Storage in memory (variable)
 let storage: Array<User> = [];
-
 const defaultUser: User = {
   id: uuidv4(),
   login: 'abc',
@@ -15,7 +20,6 @@ const defaultUser: User = {
   age: 38,
   isDeleted: false
 };
-
 const defaultUser2: User = {
   id: '777',
   login: 'newUser2',
@@ -23,9 +27,24 @@ const defaultUser2: User = {
   age: 27,
   isDeleted: false
 };
-
 storage.push(defaultUser, defaultUser2);
 
+//Validation
+const validator = createValidator();
+
+const userBodySchema = Joi.object({
+  id: Joi.string().required(),
+  login: Joi.string().required(),
+  password: Joi.string().alphanum().required(),
+  age: Joi.number().min(4).max(130).required(),
+  isDeleted: Joi.boolean().required()
+});
+
+interface CreateUserSchema extends ValidatedRequestSchema {
+  [ContainerTypes.Body]: User
+}
+
+//Middlewares for handling requests
 app.use(express.json()); //Body parser for requests
 
 app.get('/', (req, res) => {
@@ -47,7 +66,7 @@ app.get('/users/:id', (req, res) => {
   }
 });
 
-app.post('/createUser', (req, res) => {
+app.post('/createUser', validator.body(userBodySchema), (req: ValidatedRequest<CreateUserSchema>, res) => {
   const createdUser = req.body;
 
   if ( !_.isEmpty(req.body)) {
@@ -93,6 +112,5 @@ app.delete('/users/:id', (req, res) => {
 })
 
 
-app.listen(port, () => {
-  console.log(`The application is running on ${port}`);
-});
+
+
