@@ -1,9 +1,10 @@
 import express from "express";
 import { v4 as uuidv4 } from 'uuid';
-import { User, UserWithOptionalFields } from "../types/user_type";
+import { User } from "../types/user_type";
 import _ from 'lodash';
-import * as Joi from 'joi';
-import {ContainerTypes, ValidatedRequest, ValidatedRequestSchema, createValidator} from "express-joi-validation";
+import { ValidatedRequest, createValidator} from "express-joi-validation";
+import { bodySchemaForUpdatingUser, paramsSchemaForUpdateUser, UpdateUserSchema } from "../validation/patch.update-user.schema";
+import { bodySchemaForCreatingUser, CreateUserSchema } from "../validation/post.create-user.schema";
 
 const app = express();
 const port = 3000;
@@ -32,34 +33,6 @@ storage.push(defaultUser, defaultUser2);
 //Validation
 const validator = createValidator();
 
-const bodySchemaForCreatingUser = Joi.object({
-  id: Joi.string().required(),
-  login: Joi.string().required(),
-  password: Joi.string().alphanum().required(),
-  age: Joi.number().min(4).max(130).required(),
-  isDeleted: Joi.boolean().required()
-});
-
-const bodySchemaForUpdatingUser = Joi.object({
-  id: Joi.string(),
-  login: Joi.string(),
-  password: Joi.string().alphanum(),
-  age: Joi.number().min(4).max(130),
-  isDeleted: Joi.boolean()
-});
-
-const paramsSchemaForUpdateUser = Joi.object({
-  id: Joi.string().required()
-})
-
-interface CreateUserSchema extends ValidatedRequestSchema {
-  [ContainerTypes.Body]: User
-}
-
-interface UpdateUserSchema extends ValidatedRequestSchema {
-  [ContainerTypes.Body]: UserWithOptionalFields
-}
-
 //Middlewares for handling requests
 app.use(express.json()); //Body parser for requests
 
@@ -83,12 +56,16 @@ app.get('/users/:id', (req, res) => {
 });
 
 app.post('/createUser', validator.body(bodySchemaForCreatingUser), (req: ValidatedRequest<CreateUserSchema>, res) => {
-  const createdUser = req.body;
+  const createdUser = {
+    id: uuidv4(),
+    ...req.body,
+    isDeleted: false
+  };
 
   if ( !_.isEmpty(req.body)) {
     storage.push(createdUser);
     res.status(200)
-      .json({message: "User was successfully created!"})
+      .json({message: `User was successfully created with ID ${createdUser.id}!`})
   } else {
     res.status(400)
       .json({message: "User entity couldn't be empty!"})
