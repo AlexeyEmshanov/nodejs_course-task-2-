@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { ValidatedRequest, createValidator} from "express-joi-validation";
 import { bodySchemaForUpdatingUser, paramsSchemaForUpdateUser, UpdateUserSchema } from "../validation/patch.update-user.schema";
 import { bodySchemaForCreatingUser, CreateUserSchema } from "../validation/post.create-user.schema";
+import {querySchemaForSuggestedUser, SuggestedUserSchema} from "../validation/get.suggested-user.schema";
 
 const app = express();
 const port = 3000;
@@ -23,12 +24,33 @@ const defaultUser: User = {
 };
 const defaultUser2: User = {
   id: '777',
-  login: 'newUser2',
+  login: 'alex',
   password: 'newPassword2',
   age: 27,
   isDeleted: false
 };
-storage.push(defaultUser, defaultUser2);
+const defaultUser3: User = {
+  id: '111',
+  login: 'alexa',
+  password: 'newPassword3',
+  age: 27,
+  isDeleted: false
+};
+const defaultUser4: User = {
+  id: '222',
+  login: 'alexandra',
+  password: 'newPassword4',
+  age: 27,
+  isDeleted: false
+};
+const defaultUser5: User = {
+  id: '333',
+  login: 'Tom',
+  password: 'newPassword5',
+  age: 27,
+  isDeleted: false
+};
+storage.push(defaultUser, defaultUser2, defaultUser3, defaultUser4, defaultUser5);
 
 //Validation
 const validator = createValidator();
@@ -54,6 +76,19 @@ app.get('/users/:id', (req, res) => {
       .json({message: `User with id ${req.params.id} not found`})
   }
 });
+
+app.get('/search', validator.query(querySchemaForSuggestedUser), (req: ValidatedRequest<SuggestedUserSchema>, res) => {
+  const searchSubstring = req.query.loginSubstring;
+  const numberOfSearchEntity = req.query.limit;
+  const result: Array<User> = getAutoSuggestUsers(searchSubstring, numberOfSearchEntity);
+
+  if (result.length > 0) {
+    res.send(result)
+  } else {
+    res.status(400)
+      .json({ message: `Users with substring \u201c${searchSubstring}\u201c at login doesn't exist at data base.`})
+  }
+})
 
 app.post('/createUser', validator.body(bodySchemaForCreatingUser), (req: ValidatedRequest<CreateUserSchema>, res) => {
   const createdUser = {
@@ -104,6 +139,23 @@ app.delete('/users/:id', (req, res) => {
   }
 })
 
+function getAutoSuggestUsers(loginSubstring: string, limit: number): Array<User> {
+  const filteredUsers = storage.filter((user) => (user.login).toLowerCase().includes(loginSubstring.toLowerCase()));
+  const sortedUsers = filteredUsers.sort((userA, userB) => sortByLogin(userA.login, userB.login));
+  return  sortedUsers.slice(0, limit);
+}
+
+function sortByLogin(a: string, b: string) {
+  if (a > b) {
+    return 1;
+  }
+
+  if (a < b) {
+    return  -1;
+  }
+
+  return 0;
+}
 
 
 
