@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { User } from "../types/user_type";
 import _ from 'lodash';
 import { ValidatedRequest, createValidator} from "express-joi-validation";
-import { bodySchemaForUpdatingUser, paramsSchemaForUpdateUser, UpdateUserSchema } from "../validation/patch.update-user.schema";
+import { bodySchemaForUpdateUser, paramsSchemaForUpdateUser, UpdateUserSchema } from "../validation/patch.update-user.schema";
 import { bodySchemaForCreatingUser, CreateUserSchema } from "../validation/post.create-user.schema";
 import {querySchemaForSuggestedUser, SuggestedUserSchema} from "../validation/get.suggested-user.schema";
 
@@ -107,7 +107,7 @@ app.post('/createUser', validator.body(bodySchemaForCreatingUser), (req: Validat
   }
 });
 
-app.patch('/users/:id', validator.body(bodySchemaForUpdatingUser), validator.params(paramsSchemaForUpdateUser), (req: ValidatedRequest<UpdateUserSchema>, res) => {
+app.patch('/users/:id', validator.body(bodySchemaForUpdateUser), validator.params(paramsSchemaForUpdateUser), (req: ValidatedRequest<UpdateUserSchema>, res) => {
   let requestedUserIndex = storage.findIndex(user => user.id === req.params.id);
 
   if (requestedUserIndex > 0) {
