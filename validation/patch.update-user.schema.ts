@@ -2,7 +2,7 @@ import * as Joi from "joi";
 import {ContainerTypes, ValidatedRequestSchema} from "express-joi-validation";
 import {UserWithOptionalFields} from "../types/user_type";
 
-const bodySchemaForUpdatingUser = Joi.object({
+const bodySchemaForUpdateUser = Joi.object({
   login: Joi.string(),
   password: Joi.string().alphanum(),
   age: Joi.number().min(4).max(130),
@@ -17,4 +17,4 @@ interface UpdateUserSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: UserWithOptionalFields
 }
 
-export { bodySchemaForUpdatingUser, paramsSchemaForUpdateUser, UpdateUserSchema };
+export { bodySchemaForUpdateUser, paramsSchemaForUpdateUser, UpdateUserSchema };
