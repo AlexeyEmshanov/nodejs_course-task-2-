@@ -1,16 +1,17 @@
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS Users;
 
-CREATE TABLE users (
+CREATE TABLE Users (
+    id text,
     login text,
     password text,
     age integer,
     isDeleted boolean
 );
 
-INSERT INTO users
+INSERT INTO Users
     VALUES
-        ('UserA', 'UserAPassword', 38, false),
-        ('UserB', 'UserBPassword', 38, false),
-        ('UserC', 'UserCPassword', 8, false),
-        ('UserD', 'UserDPassword', 6, false),
-        ('UserE', 'UserEPassword', 10, false);
+        ('111', 'UserA', 'UserAPassword', 38, false),
+        ('222', 'UserB', 'UserBPassword', 38, false),
+        ('333', 'UserC', 'UserCPassword', 8, false),
+        ('444', 'UserD', 'UserDPassword', 6, false),
+        ('555', 'UserE', 'UserEPassword', 10, false);
