@@ -1,4 +1,4 @@
-DROP TABLE users;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     login text,
@@ -9,8 +9,8 @@ CREATE TABLE users (
 
 INSERT INTO users
     VALUES
-        ('Alex', 'AlexPassword', 38, false),
-        ('Alexandra', 'AlexandraPassword', 38, false),
-        ('Aurora', 'AuroraPassword', 8, false),
-        ('Agata', 'AgataPassword', 6, false),
-        ('Barca', 'BarcaPassword', 10, false);
+        ('UserA', 'UserAPassword', 38, false),
+        ('UserB', 'UserBPassword', 38, false),
+        ('UserC', 'UserCPassword', 8, false),
+        ('UserD', 'UserDPassword', 6, false),
+        ('UserE', 'UserEPassword', 10, false);

@@ -25,6 +25,8 @@
     "joi-extract-type": "^15.0.8",
     "lodash": "^4.17.21",
     "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.25.3",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
