@@ -123,14 +123,23 @@ app.get('/', (req, res) => {
 app.get('/users', async (req, res) => {
   const usersFormDB = await User.findAll();
 
-  res.json(usersFormDB);
+  if (usersFormDB.length) {
+    res.json(usersFormDB);
+  } else {
+    res.status(404)
+      .json({message: `No users at database`})
+  }
 });
 
-app.get('/users/:id', (req, res) => {
-  let requestedUser = _.find(storage, {id: req.params.id})
+app.get('/users/:id', async (req, res) => {
+  const requstedUserFromDB = await User.findAll({
+    where: {
+      id: req.params.id
+    }
+  });
 
-  if (requestedUser) {
-    res.json(requestedUser);
+  if (requstedUserFromDB.length) {
+    res.json(requstedUserFromDB);
   } else {
     res.status(404)
       .json({message: `User with id ${req.params.id} not found`})
