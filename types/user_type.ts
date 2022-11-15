@@ -1,4 +1,4 @@
-type User = {
+type IUser = {
     id?: string,
     login: string,
     password: string,
@@ -6,7 +6,7 @@ type User = {
     isDeleted: boolean
 }
 
-type UserWithOptionalFields = {
+type IUserWithOptionalFields = {
     id?: string,
     login?: string,
     password?: string,
@@ -14,4 +14,4 @@ type UserWithOptionalFields = {
     isDeleted?: boolean
 }
 
-export { User, UserWithOptionalFields };
+export { IUser, IUserWithOptionalFields };
