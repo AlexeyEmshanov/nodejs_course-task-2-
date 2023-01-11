@@ -5,6 +5,7 @@ import {bodySchemaForCreatingUser, CreateUserSchema} from "../../validation/post
 import { bodySchemaForUpdateUser, paramsSchemaForUpdateUser, UpdateUserSchema } from "../../validation/patch.update-user.schema";
 import app from "../../app/app";
 import {createUser, deleteUser, getAllUsers, getAutoSuggestUsers, getUserById, updateUser} from "../../services";
+import { GetUserByIdSchema, paramsSchemaForGetUserById } from "../../validation/get.user.schema";
 
 //Middlewares for handling requests
 app.get('/', (req, res) => {
@@ -22,9 +23,8 @@ app.get('/users', async (req, res) => {
   }
 });
 
-app.get('/users/:id', async (req, res) => {
+app.get('/users/:id', validator.params(paramsSchemaForGetUserById), async (req: ValidatedRequest<GetUserByIdSchema>, res) => {
   const requestedUserFromDB = await getUserById(req.params.id);
-
   if (requestedUserFromDB.length) {
     res.json(requestedUserFromDB);
   } else {
