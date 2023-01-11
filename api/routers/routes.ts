@@ -66,6 +66,19 @@ app.patch('/users/:id', validator.body(bodySchemaForUpdateUser), validator.param
   }
 });
 
+app.put('/users/:id', validator.body(bodySchemaForUpdateUser), validator.params(paramsSchemaForUpdateUser), async (req: ValidatedRequest<UpdateUserSchema>, res) => {
+  const userToUpdate = {...req.body};
+  const userToUpdateID = req.params.id;
+  const successfullyUpdateCounter = await updateUser(userToUpdate, userToUpdateID);
+
+  if (successfullyUpdateCounter[0] > 0) {
+    res.json({message: `User with ID: ${userToUpdateID} was successfully updated!`}).status(200);
+  } else {
+    res.status(400)
+      .json({message: `User with ID: ${userToUpdateID} doesn't exist`})
+  }
+});
+
 app.delete('/users/:id', async (req, res) => {
   const successfullyDeleteCounter = await deleteUser(req.params.id);
 
