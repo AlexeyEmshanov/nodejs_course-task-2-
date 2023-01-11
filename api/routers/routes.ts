@@ -49,17 +49,17 @@ app.get('/search', validator.query(querySchemaForSuggestedUser), async (req: Val
 app.post('/users', validator.body(bodySchemaForCreatingUser), async (req: ValidatedRequest<CreateUserSchema>, res) => {
   const createdUser = await createUser({ ...req.body });
 
-  res.status(200)
+  res.status(201)
     .json({message: `User was successfully created with ID ${createdUser.get('id')}!`})
 });
 
 app.patch('/users/:id', validator.body(bodySchemaForUpdateUser), validator.params(paramsSchemaForUpdateUser), async (req: ValidatedRequest<UpdateUserSchema>, res) => {
   const userToUpdate = {...req.body};
-  const userToUpdateID = req.params.id
+  const userToUpdateID = req.params.id;
   const successfullyUpdateCounter = await updateUser(userToUpdate, userToUpdateID);
 
   if (successfullyUpdateCounter[0] > 0) {
-    res.json({message: `User with ID: ${userToUpdateID} was successfully updated!`})
+    res.json({message: `User with ID: ${userToUpdateID} was successfully updated!`}).status(200);
   } else {
     res.status(400)
       .json({message: `User with ID: ${userToUpdateID} doesn't exist`})

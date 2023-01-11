@@ -1,6 +1,6 @@
 import * as Joi from "joi";
 import {ContainerTypes, ValidatedRequestSchema} from "express-joi-validation";
-import {User} from "../types/user_type";
+import { IUser } from "../types/user_type";
 
 const bodySchemaForCreatingUser = Joi.object({
   // id: Joi.string().required(),
@@ -11,7 +11,7 @@ const bodySchemaForCreatingUser = Joi.object({
 });
 
 interface CreateUserSchema extends ValidatedRequestSchema {
-  [ContainerTypes.Body]: User
+  [ContainerTypes.Body]: IUser
 }
 
 export { bodySchemaForCreatingUser, CreateUserSchema };

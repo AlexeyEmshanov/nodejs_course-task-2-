@@ -1,6 +1,6 @@
 import { User } from "../data-access/data-access";
 import { IUser, IUserWithOptionalFields } from "../types/user_type";
-import {Model} from "sequelize";
+import { Model } from "sequelize";
 
 async function getAutoSuggestUsers(loginSubstring: string, limit: number) {
   const allUsersFromDB = await User.findAll();
@@ -21,11 +21,11 @@ function sortByLogin(a: any, b: any) {
   return 0;
 }
 
-function getAllUsers(): Promise<Model<typeof User>[]> {
+async function getAllUsers(): Promise<Model<typeof User>[]> {
   return User.findAll();
 }
 
-function getUserById(id: string): Promise<Model<typeof User>[]> {
+async function getUserById(id: string): Promise<Model<typeof User>[]> {
   return User.findAll({
     where: {
       id: id
@@ -33,18 +33,18 @@ function getUserById(id: string): Promise<Model<typeof User>[]> {
   });
 }
 
-function createUser(user: IUser): Promise<Model<typeof User>> {
+async function createUser(user: IUser): Promise<Model<typeof User>> {
   return User.create(user);
 }
 
 /**
  * TODO: Types. Don't work user: IUser, but with optional fields works well
  */
-function updateUser(user: IUserWithOptionalFields, id: string): Promise<[affectedCount: number]> {
+async function updateUser(user: IUserWithOptionalFields, id: string): Promise<[affectedCount: number]> {
   return User.update( user, { where: { id: id}});
 }
 
-function deleteUser(id: string): Promise<[affectedCount: number]> {
+async function deleteUser(id: string): Promise<[affectedCount: number]> {
   return User.update( { isdeleted: true }, { where: {id: id}})
 }
 
