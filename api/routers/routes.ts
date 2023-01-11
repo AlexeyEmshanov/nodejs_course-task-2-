@@ -46,7 +46,7 @@ app.get('/search', validator.query(querySchemaForSuggestedUser), async (req: Val
   }
 })
 
-app.post('/createUser', validator.body(bodySchemaForCreatingUser), async (req: ValidatedRequest<CreateUserSchema>, res) => {
+app.post('/users', validator.body(bodySchemaForCreatingUser), async (req: ValidatedRequest<CreateUserSchema>, res) => {
   const createdUser = await createUser({ ...req.body });
 
   res.status(200)
