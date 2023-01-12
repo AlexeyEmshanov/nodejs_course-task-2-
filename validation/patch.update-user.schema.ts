@@ -10,11 +10,12 @@ const bodySchemaForUpdateUser = Joi.object({
 });
 
 const paramsSchemaForUpdateUser = Joi.object({
-  id: Joi.string().required()
+  id: Joi.string().guid({version: 'uuidv4'}).required()
 })
 
 interface UpdateUserSchema extends ValidatedRequestSchema {
-  [ContainerTypes.Body]: IUserWithOptionalFields
+  [ContainerTypes.Body]: IUserWithOptionalFields,
+  [ContainerTypes.Params]: { id: string }
 }
 
 export { bodySchemaForUpdateUser, paramsSchemaForUpdateUser, UpdateUserSchema };
