@@ -1,7 +1,8 @@
-import { User } from "../data-access/data-access";
+import { User, Group } from "../data-access/data-access";
 import { IUser, IUserWithOptionalFields } from "../types/user_type";
 import { Model } from "sequelize";
 
+//USER SERVICES
 async function getAutoSuggestUsers(loginSubstring: string, limit: number) {
   const allUsersFromDB = await User.findAll();
   const filteredUsers = allUsersFromDB.filter((user => user.get().login.toLowerCase().includes(loginSubstring.toLowerCase())));
@@ -48,4 +49,18 @@ async function deleteUser(id: string): Promise<[affectedCount: number]> {
   return User.update( { isdeleted: true }, { where: {id: id}})
 }
 
-export { getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser };
+
+//GROUP SERVICES
+async function getAllGroups(): Promise<Model<typeof Group>[]> {
+  return Group.findAll();
+}
+
+async function getGroupById(id: string): Promise<Model<typeof Group>[]> {
+  return Group.findAll({
+    where: {
+      id: id
+    }
+  });
+}
+
+export { getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getAllGroups, getGroupById };
