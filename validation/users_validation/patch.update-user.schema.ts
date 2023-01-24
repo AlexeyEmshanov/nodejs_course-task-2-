@@ -1,6 +1,6 @@
 import * as Joi from "joi";
 import {ContainerTypes, ValidatedRequestSchema} from "express-joi-validation";
-import {IUserWithOptionalFields} from "../types/user_type";
+import {IUserWithOptionalFields} from "../../types/user_type";
 
 const bodySchemaForUpdateUser = Joi.object({
   login: Joi.string(),
