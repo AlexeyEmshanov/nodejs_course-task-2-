@@ -7,10 +7,6 @@ import app from "../../app/app";
 import {createUser, deleteUser, getAllUsers, getAutoSuggestUsers, getUserById, updateUser} from "../../services";
 import { GetUserByIdSchema, paramsSchemaForGetUserById } from "../../validation/get.user.schema";
 
-//Middlewares for handling requests
-app.get('/', (req, res) => {
-  res.send('Welcome to the test server!');
-});
 
 app.get('/users', async (req, res) => {
   const usersFormDB = await getAllUsers();
@@ -76,5 +72,4 @@ app.delete('/users/:id', async (req, res) => {
       .json({message: `User with ID: ${req.params.id} doesn't exist. Deleting is impossible!`})
   }
 })
-
 
