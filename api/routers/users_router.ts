@@ -1,18 +1,18 @@
 import {validator} from "../../data-access/data-access";
-import {querySchemaForSuggestedUser, SuggestedUserSchema} from "../../validation/get.suggested-user.schema";
+import {querySchemaForSuggestedUser, SuggestedUserSchema} from "../../validation/users_validation/get.suggested-user.schema";
 import {ValidatedRequest} from "express-joi-validation";
-import {bodySchemaForCreatingUser, CreateUserSchema} from "../../validation/post.create-user.schema";
-import { bodySchemaForUpdateUser, paramsSchemaForUpdateUser, UpdateUserSchema } from "../../validation/patch.update-user.schema";
+import {bodySchemaForCreatingUser, CreateUserSchema} from "../../validation/users_validation/post.create-user.schema";
+import { bodySchemaForUpdateUser, paramsSchemaForUpdateUser, UpdateUserSchema } from "../../validation/users_validation/patch.update-user.schema";
 import app from "../../app/app";
 import {createUser, deleteUser, getAllUsers, getAutoSuggestUsers, getUserById, updateUser} from "../../services";
-import { GetUserByIdSchema, paramsSchemaForGetUserById } from "../../validation/get.user.schema";
+import { GetUserByIdSchema, paramsSchemaForGetUserById } from "../../validation/users_validation/get.user.schema";
 
 
 app.get('/users', async (req, res) => {
-  const usersFormDB = await getAllUsers();
+  const usersFromDB = await getAllUsers();
 
-  if (usersFormDB.length) {
-    res.json(usersFormDB);
+  if (usersFromDB.length) {
+    res.json(usersFromDB);
   } else {
     res.status(404)
       .json({message: `No users at database`})
