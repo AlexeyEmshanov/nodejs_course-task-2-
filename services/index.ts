@@ -1,7 +1,7 @@
 import { User, Group } from "../data-access/data-access";
 import { IUser, IUserWithOptionalFields } from "../types/user_type";
 import { Model } from "sequelize";
-import {IGroup} from "../types/group_type";
+import { IGroup } from "../types/group_type";
 
 //USER SERVICES
 async function getAutoSuggestUsers(loginSubstring: string, limit: number) {
@@ -28,11 +28,7 @@ async function getAllUsers(): Promise<Model<typeof User>[]> {
 }
 
 async function getUserById(id: string): Promise<Model<typeof User>[]> {
-  return User.findAll({
-    where: {
-      id: id
-    }
-  });
+  return User.findAll({ where: { id: id } });
 }
 
 async function createUser(user: IUser): Promise<Model<typeof User>> {
@@ -43,7 +39,7 @@ async function createUser(user: IUser): Promise<Model<typeof User>> {
  * TODO: Types. Don't work user: IUser, but with optional fields works well
  */
 async function updateUser(user: IUserWithOptionalFields, id: string): Promise<[affectedCount: number]> {
-  return User.update( user, { where: { id: id}});
+  return User.update(user, { where: { id: id}});
 }
 
 async function deleteUser(id: string): Promise<[affectedCount: number]> {
@@ -57,15 +53,22 @@ async function getAllGroups(): Promise<Model<typeof Group>[]> {
 }
 
 async function getGroupById(id: string): Promise<Model<typeof Group>[]> {
-  return Group.findAll({
-    where: {
-      id: id
-    }
-  });
+  return Group.findAll({ where: { id: id } });
 }
 
 async function createGroup(group: IGroup): Promise<Model<typeof Group>> {
   return Group.create(group);
 }
 
-export { getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getAllGroups, getGroupById, createGroup };
+async function updateGroup(group: IGroup, id: string): Promise<[affectedCount: number]> {
+  return Group.update(group, { where: { id: id}});
+}
+
+async function deleteGroup(id: string): Promise<number> {
+  return Group.destroy({
+    where: {id: id},
+    force: true
+  })
+}
+
+export { getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup };
