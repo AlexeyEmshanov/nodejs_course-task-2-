@@ -1,6 +1,7 @@
 import { User, Group } from "../data-access/data-access";
 import { IUser, IUserWithOptionalFields } from "../types/user_type";
 import { Model } from "sequelize";
+import {IGroup} from "../types/group_type";
 
 //USER SERVICES
 async function getAutoSuggestUsers(loginSubstring: string, limit: number) {
@@ -63,4 +64,8 @@ async function getGroupById(id: string): Promise<Model<typeof Group>[]> {
   });
 }
 
-export { getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getAllGroups, getGroupById };
+async function createGroup(group: IGroup): Promise<Model<typeof Group>> {
+  return Group.create(group);
+}
+
+export { getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getAllGroups, getGroupById, createGroup };

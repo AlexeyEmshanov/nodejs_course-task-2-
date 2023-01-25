@@ -1,9 +1,12 @@
 import app from '../../app/app';
-import {getAllGroups, getGroupById} from '../../services';
+import {createGroup, getAllGroups, getGroupById} from '../../services';
 import {validator} from "../../data-access/data-access";
 import {ValidatedRequest} from "express-joi-validation";
 import {GetGroupByIdSchema, paramsSchemaForGetGroupById} from "../../validation/groups_validation/get.group.schema";
-
+import {
+    bodySchemaForCreatingGroup,
+    CreateGroupSchema
+} from "../../validation/groups_validation/post.create-group.schema";
 
 app.get('/groups', async (req, res) => {
     const groupsFromDB = await getAllGroups();
@@ -24,6 +27,13 @@ app.get('/groups/:id', validator.params(paramsSchemaForGetGroupById), async (req
         res.status(404)
           .json({message: `User with id ${req.params.id} not found`})
     }
+});
+
+app.post('/groups', validator.body(bodySchemaForCreatingGroup), async (req: ValidatedRequest<CreateGroupSchema>, res) => {
+    const createdGroup = await createGroup({ ...req.body });
+
+    res.status(201)
+      .json({message: `User was successfully created with ID ${createdGroup.get('id')}!`})
 });
 
 
