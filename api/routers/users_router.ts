@@ -45,8 +45,13 @@ app.get('/search', validator.query(querySchemaForSuggestedUser), async (req: Val
 app.post('/users', validator.body(bodySchemaForCreatingUser), async (req: ValidatedRequest<CreateUserSchema>, res) => {
   const createdUser = await createUser({ ...req.body });
 
-  res.status(201)
-    .json({message: `User was successfully created with ID ${createdUser.get('id')}!`})
+  if (createdUser) {
+    res.status(201)
+      .json({message: `User was successfully created with ID ${createdUser.get('id')}!`})
+  } else {
+    res.status(400)
+      .json({message: "In the process of User creation something went wrong..."})
+  }
 });
 
 app.put('/users/:id', validator.body(bodySchemaForUpdateUser), validator.params(paramsSchemaForUpdateUser), async (req: ValidatedRequest<UpdateUserSchema>, res) => {

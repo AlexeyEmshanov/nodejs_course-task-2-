@@ -32,8 +32,13 @@ app.get('/groups/:id', validator.params(paramsSchemaForGetGroupById), async (req
 app.post('/groups', validator.body(bodySchemaForCreatingGroup), async (req: ValidatedRequest<CreateGroupSchema>, res) => {
     const createdGroup = await createGroup({ ...req.body });
 
-    res.status(201)
-      .json({message: `Group was successfully created with ID ${createdGroup.get('id')}!`})
+    if (createdGroup) {
+        res.status(201)
+          .json({message: `Group was successfully created with ID ${createdGroup.get('id')}!`})
+    } else {
+        res.status(400)
+          .json({message: "In the process of Group creation something went wrong..."})
+    }
 });
 
 
