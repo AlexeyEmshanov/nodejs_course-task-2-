@@ -33,7 +33,7 @@ app.post('/groups', validator.body(bodySchemaForCreatingGroup), async (req: Vali
     const createdGroup = await createGroup({ ...req.body });
 
     res.status(201)
-      .json({message: `User was successfully created with ID ${createdGroup.get('id')}!`})
+      .json({message: `Group was successfully created with ID ${createdGroup.get('id')}!`})
 });
 
 
