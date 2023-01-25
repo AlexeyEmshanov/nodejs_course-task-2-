@@ -1,10 +1,10 @@
-import {validator} from "../../data-access/data-access";
-import {querySchemaForSuggestedUser, SuggestedUserSchema} from "../../validation/users_validation/get.suggested-user.schema";
-import {ValidatedRequest} from "express-joi-validation";
-import {bodySchemaForCreatingUser, CreateUserSchema} from "../../validation/users_validation/post.create-user.schema";
-import { bodySchemaForUpdateUser, paramsSchemaForUpdateUser, UpdateUserSchema } from "../../validation/users_validation/patch.update-user.schema";
+import { validator} from "../../data-access/data-access";
+import { querySchemaForSuggestedUser, SuggestedUserSchema } from "../../validation/users_validation/get.suggested-user.schema";
+import { ValidatedRequest } from "express-joi-validation";
+import { bodySchemaForCreatingUser, CreateUserSchema } from "../../validation/users_validation/post.create-user.schema";
+import { bodySchemaForUpdateUser, paramsSchemaForUpdateUser, UpdateUserSchema } from "../../validation/users_validation/put.update-user.schema";
 import app from "../../app/app";
-import {createUser, deleteUser, getAllUsers, getAutoSuggestUsers, getUserById, updateUser} from "../../services";
+import { createUser, deleteUser, getAllUsers, getAutoSuggestUsers, getUserById, updateUser } from "../../services";
 import { GetUserByIdSchema, paramsSchemaForGetUserById } from "../../validation/users_validation/get.user.schema";
 
 
@@ -54,12 +54,12 @@ app.post('/users', validator.body(bodySchemaForCreatingUser), async (req: Valida
   }
 });
 
-app.put('/users/:id', validator.body(bodySchemaForUpdateUser), validator.params(paramsSchemaForUpdateUser), async (req: ValidatedRequest<UpdateUserSchema>, res) => {
-  const userToUpdate = {...req.body};
+app.put('/users/:id', validator.params(paramsSchemaForUpdateUser), validator.body(bodySchemaForUpdateUser),  async (req: ValidatedRequest<UpdateUserSchema>, res) => {
+  const newUserStateToUpdate = {...req.body};
   const userToUpdateID = req.params.id;
-  const successfullyUpdateCounter = await updateUser(userToUpdate, userToUpdateID);
+  const successfullyUpdatesCounter = await updateUser(newUserStateToUpdate, userToUpdateID);
 
-  if (successfullyUpdateCounter[0] > 0) {
+  if (successfullyUpdatesCounter[0] > 0) {
     res.json({message: `User with ID: ${userToUpdateID} was successfully updated!`}).status(200);
   } else {
     res.status(400)
@@ -67,10 +67,10 @@ app.put('/users/:id', validator.body(bodySchemaForUpdateUser), validator.params(
   }
 });
 
-app.delete('/users/:id', async (req, res) => {
-  const successfullyDeleteCounter = await deleteUser(req.params.id);
+app.delete('/users/:id', validator.params(paramsSchemaForGetUserById), async (req: ValidatedRequest<GetUserByIdSchema>, res) => {
+  const successfullyDeletedCounter = await deleteUser(req.params.id);
 
-  if (successfullyDeleteCounter[0] > 0) {
+  if (successfullyDeletedCounter[0] > 0) {
     res.json({message: `User with ID: ${req.params.id} was successfully deleted!`})
   } else {
     res.status(400)
