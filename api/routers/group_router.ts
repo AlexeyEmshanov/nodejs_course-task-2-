@@ -1,6 +1,13 @@
 import app from '../../app/app';
-import { createGroup, deleteGroup, getAllGroups, getGroupById, updateGroup } from '../../services';
-import { validator} from "../../data-access/data-access";
+import {
+    createGroup,
+    deleteGroup,
+    getAllGroups,
+    getGroupById,
+    updateGroup,
+    addUsersToGroup, findUsersAtGroup
+} from '../../services';
+import { validator } from "../../data-access/data-access";
 import { ValidatedRequest} from "express-joi-validation";
 import { GetGroupByIdSchema, paramsSchemaForGetGroupById } from "../../validation/groups_validation/get.group.schema";
 import { bodySchemaForCreatingGroup, CreateGroupSchema } from "../../validation/groups_validation/post.create-group.schema";
@@ -64,4 +71,21 @@ app.delete('/groups/:id', validator.params(paramsSchemaForGetGroupById), async (
     }
 })
 
+//Create two records in UserGroups table for addUsersToGroup() method testing
+app.get('/many', async (req, res) => {
+    await addUsersToGroup('0db8327d-fa5f-482c-9023-e6476eb3402a', '77098ffa-cfc2-428a-a9eb-ce064b918b92');
+    await addUsersToGroup('0db8327d-fa5f-482c-9023-e6476eb3402a', '7c655945-f3e6-4beb-80b9-188c896b3066');
 
+    res.json({message: "Test records with addUsersToGroup() method created"});
+});
+
+app.get('/usersFromGroup', async (req, res) => {
+    try {
+        const usersAtGroup = await findUsersAtGroup('0db8327d-fa5f-482c-9023-e6476eb3402a');
+        res.json({message: `There are following users at ${usersAtGroup[0].get('name')} group`, foundedUserAtGroup: usersAtGroup[0].get('Users')});
+    }
+    catch {
+        res.status(400)
+          .json({message: `Unfortunately there are no users belongs to requested group`});
+    }
+});
