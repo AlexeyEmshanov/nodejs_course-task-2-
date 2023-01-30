@@ -1,4 +1,4 @@
-import { User, Group } from "../data-access/data-access";
+import {User, Group, UserGroups, sequelize} from "../data-access/data-access";
 import { IUser, IUserWithOptionalFields } from "../types/user_type";
 import { Model } from "sequelize";
 import { IGroup } from "../types/group_type";
@@ -71,4 +71,22 @@ async function deleteGroup(id: string): Promise<number> {
   })
 }
 
-export { getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup };
+async function addUsersToGroup(groupId: string, userId: string) {
+  return sequelize.transaction(async () => {
+    return UserGroups.create({
+      GroupId: groupId,
+      UserId: userId
+    });
+  })
+}
+
+async function findUsersAtGroup(groupId: string) {
+  return Group.findAll({
+    where: {
+      id: groupId
+    },
+    include: User
+  })
+}
+
+export { getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup, addUsersToGroup, findUsersAtGroup };
