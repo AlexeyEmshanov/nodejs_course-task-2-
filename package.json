@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app/index.js\""
+    "compile": "npx tsc && node dist/app/index.js",
+    "execute_initial_db_script": "psql -f scripts/init_db.sql \"postgresql://postgres:password1@localhost\"",
+    "dev_old": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app/index.js\"",
+    "dev": "npm run execute_initial_db_script && nodemon --watch ts --exec \"npm run compile\""
   },
   "repository": {
     "type": "git",
