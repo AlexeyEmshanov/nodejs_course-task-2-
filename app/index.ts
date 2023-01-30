@@ -1,7 +1,5 @@
 import app from './app';
-import '../api/routers/root_router';
-import '../api/routers/users_router';
-import '../api/routers/group_router';
+import '../api/routers/routes';
 
 const port = 3000;
 app.listen(port, () => {
