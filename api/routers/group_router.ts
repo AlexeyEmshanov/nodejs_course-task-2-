@@ -14,6 +14,12 @@ import { bodySchemaForCreatingGroup, CreateGroupSchema } from "../../validation/
 import { bodySchemaForUpdateGroup, paramsSchemaForUpdateGroup, UpdateGroupSchema } from "../../validation/groups_validation/put.update-group.schema";
 
 app.get('/groups', async (req, res) => {
+    //To simulate unhandled promise rejection
+    new Promise((resolve, reject) => {
+        setTimeout(() =>{ resolve('Promise resolve happens')}, 1000)
+    }).then(() => {throw new Error('Promise Rejection Error happened')});
+      // .catch(err => console.log('It is catch promise block', err));
+
     const groupsFromDB = await getAllGroups();
 
     if (groupsFromDB.length) {

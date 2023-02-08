@@ -6,16 +6,29 @@ import { bodySchemaForUpdateUser, paramsSchemaForUpdateUser, UpdateUserSchema } 
 import app from "../../app/app";
 import { createUser, deleteUser, getAllUsers, getAutoSuggestUsers, getUserById, updateUser } from "../../services";
 import { GetUserByIdSchema, paramsSchemaForGetUserById } from "../../validation/users_validation/get.user.schema";
+import {NextFunction} from "express";
 
 
-app.get('/users', async (req, res) => {
-  const usersFromDB = await getAllUsers();
+app.get('/users', async (req, res, next: NextFunction) => {
+  try {
+    //To simulate uncaught exception
+    setTimeout(() => { throw new Error('Uncaught exception happened') }, 1000);
 
-  if (usersFromDB.length) {
-    res.json(usersFromDB);
-  } else {
-    res.status(404)
-      .json({message: `No users at database`})
+    //To simulate unexpected exception in middleware
+    throw new Error('Unexpected exception in middleware happened');
+
+    const usersFromDB = await getAllUsers();
+
+    if (usersFromDB.length) {
+      res.json(usersFromDB);
+    } else {
+      res.status(404)
+        .json({message: `No users at database`})
+    }
+  }
+
+  catch (err) {
+    next(err);
   }
 });
 
