@@ -46,6 +46,10 @@ async function deleteUser(id: string): Promise<[affectedCount: number]> {
   return User.update( { isdeleted: true }, { where: {id: id}})
 }
 
+async function getUserWithCredentials(login: string, password: string): Promise<Model<typeof User>[]> {
+  return User.findAll({where: {login: login, password: password}})
+}
+
 
 //GROUP SERVICES
 async function getAllGroups(): Promise<Model<typeof Group>[]> {
@@ -89,4 +93,4 @@ async function findUsersAtGroup(groupId: string) {
   })
 }
 
-export { getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup, addUsersToGroup, findUsersAtGroup };
+export { getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getUserWithCredentials, getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup, addUsersToGroup, findUsersAtGroup };
