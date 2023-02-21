@@ -4,11 +4,13 @@ import {
   methodsLogger,
   promiseRejectionHandler
 } from "../api/middlewares/error_handlers";
+import {authenticationWithJWTMiddleware} from "../api/middlewares/authentication";
 
 const app = express();
 
 app.use(express.json()); //Body parser for requests
 app.use(methodsLogger);
+app.use(authenticationWithJWTMiddleware);
 
 //default process.on handling
 process.on('unhandledRejection', promiseRejectionHandler);
