@@ -33,9 +33,6 @@ app.get('/users', async (req, res, next: NextFunction) => {
 
 app.get('/users/:id', validator.params(paramsSchemaForGetUserById), async (req: ValidatedRequest<GetUserByIdSchema>, res, next: NextFunction) => {
   try {
-    console.log('THE PARAMS:', req.params, Date.now())
-    throw new Error('new Error')
-
     const requestedUserFromDB = await getUserById(req.params.id);
     if (requestedUserFromDB.length) {
       res.json(requestedUserFromDB);
