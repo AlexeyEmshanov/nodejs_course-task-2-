@@ -21,7 +21,7 @@ app.post('/auth', validator.body(bodySchemaForUserAuthorziation), async (req: Va
   if (userWithCredentials.length) {
     console.log('Requested user: ', userWithCredentials[0].get({plain: true}));
     const payload = {"sub": userWithCredentials[0].get('id')};
-    const token = jwt.sign(payload, 'XYZsecret12345', {expiresIn: 100});
+    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET_KEY_FOR_JWT as string, {expiresIn: 100});
 
     res
       .status(201)

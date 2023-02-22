@@ -1,4 +1,5 @@
 import express from "express";
+import * as dotenv from "dotenv";
 import {
   exceptionHandler,
   methodsLogger,
@@ -6,6 +7,7 @@ import {
 } from "../api/middlewares/error_handlers";
 import {authenticationWithJWTMiddleware} from "../api/middlewares/authentication";
 
+dotenv.config();
 const app = express();
 
 app.use(express.json()); //Body parser for requests
