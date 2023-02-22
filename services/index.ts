@@ -2,6 +2,7 @@ import {User, Group, UserGroups, sequelize} from "../data-access/data-access";
 import { IUser, IUserWithOptionalFields } from "../types/user_type";
 import { Model } from "sequelize";
 import { IGroup } from "../types/group_type";
+import jwt from "jsonwebtoken";
 
 //USER SERVICES
 async function getAutoSuggestUsers(loginSubstring: string, limit: number) {
@@ -93,4 +94,17 @@ async function findUsersAtGroup(groupId: string) {
   })
 }
 
-export { getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getUserWithCredentials, getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup, addUsersToGroup, findUsersAtGroup };
+//JWT
+function generateAccessToken(payload:  string | object): string {
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET_KEY_FOR_JWT as string, {expiresIn: 30});
+}
+
+function generateRefreshToken(payload:  string | object): string {
+  return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET_KEY_FOR_JWT as string, {expiresIn: 300});
+}
+
+export {
+  getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getUserWithCredentials,
+  getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup, addUsersToGroup, findUsersAtGroup,
+  generateAccessToken, generateRefreshToken
+};

@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from "express";
 import jwt from "jsonwebtoken";
 
 export function authenticationWithJWTMiddleware(req: Request, res: Response, next: NextFunction): void {
-  if (req.path !== '/auth') {
+  if (req.path !== '/auth' && req.path !== '/refresh') {
     const token = req.headers['x-access-token'];
 
     if (token &&  typeof token === 'string') {
