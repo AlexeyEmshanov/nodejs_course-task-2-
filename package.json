@@ -1,10 +1,15 @@
 {
-  "name": "nodejs_course_task-2",
+  "name": "nodejs_course_task-3",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc",
+    "compile": "npx tsc && node dist/app/index.js",
+    "execute_initial_db_script": "psql -f scripts/init_db.sql \"postgresql://postgres:password1@localhost\"",
+    "dev_old": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app/index.js\"",
+    "dev": "npm run execute_initial_db_script && nodemon --watch ts --exec \"npm run compile\""
   },
   "repository": {
     "type": "git",
@@ -15,5 +20,38 @@
   "bugs": {
     "url": "https://github.com/AlexeyEmshanov/nodejs_course_task-2/issues"
   },
-  "homepage": "https://github.com/AlexeyEmshanov/nodejs_course_task-2#readme"
+  "dependencies": {
+    "@babel/register": "^7.18.9",
+    "@types/jsonwebtoken": "^9.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.1",
+    "express-joi-validation": "^5.0.1",
+    "joi": "^17.6.3",
+    "joi-extract-type": "^15.0.8",
+    "jsonwebtoken": "^9.0.0",
+    "lodash": "^4.17.21",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.25.3",
+    "uuid": "^9.0.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.3",
+    "@babel/preset-env": "^7.19.3",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.14",
+    "@types/lodash": "^4.14.186",
+    "@types/node": "^18.8.2",
+    "@types/pg": "^8.6.5",
+    "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
+    "concurrently": "^7.4.0",
+    "eslint": "^8.24.0",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
+  }
 }
