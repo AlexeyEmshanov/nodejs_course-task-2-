@@ -14,7 +14,7 @@ app.get('/', (req, res, next) => {
   }
 });
 
-app.post('/auth', validator.body(bodySchemaForUserAuthorziation), async (req: ValidatedRequest<AuthUserSchema>, res) => {
+app.post('/login', validator.body(bodySchemaForUserAuthorziation), async (req: ValidatedRequest<AuthUserSchema>, res) => {
   // TODO: how to make appropriate type to model
   const userWithCredentials = await getUserWithCredentials(req.body.login, req.body.password);
 

@@ -1,9 +1,9 @@
 import {NextFunction, Request, Response} from "express";
 import jwt from "jsonwebtoken";
 
-export function authenticationWithJWTMiddleware(req: Request, res: Response, next: NextFunction): void {
-  if (req.path !== '/auth' && req.path !== '/refresh') {
-    const token = req.headers['x-access-token'];
+export function authenticationMiddleware(req: Request, res: Response, next: NextFunction): void {
+  if (req.path !== '/login' && req.path !== '/refresh') {
+    const token = req.headers['authorization'];
 
     if (token &&  typeof token === 'string') {
       jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY_FOR_JWT as string, function(error, decoded) {
