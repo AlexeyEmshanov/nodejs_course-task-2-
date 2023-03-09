@@ -4,11 +4,13 @@
       "@babel/preset-env",
       {
         "targets": {
-          "chrome": "105"
+          "chrome": "105",
+          "node": "current"
         },
         "useBuiltIns": "usage",
         "corejs": "3.6.5"
       }
-    ]
+    ],
+    "@babel/preset-typescript"
   ]
 }

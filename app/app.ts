@@ -10,7 +10,7 @@ import {authenticationMiddleware} from "../api/middlewares/authentication";
 
 dotenv.config();
 const corsOption = {
-    origin: ["https://www.example.com"]
+    // origin: ["https://www.example.com"]
 };
 
 const app = express();
@@ -18,7 +18,7 @@ const app = express();
 app.use(express.json()); //Body parser for requests
 app.use(cors(corsOption));
 app.use(methodsLogger);
-app.use(authenticationMiddleware);
+// app.use(authenticationMiddleware);
 
 //default process.on handling
 process.on('unhandledRejection', promiseRejectionHandler);

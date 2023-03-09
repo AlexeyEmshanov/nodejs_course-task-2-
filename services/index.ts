@@ -24,11 +24,11 @@ function sortByLogin(a: any, b: any) {
   return 0;
 }
 
-async function getAllUsers(): Promise<Model<typeof User>[]> {
+async function getAllUsersFromDB(): Promise<Model<typeof User>[]> {
   return User.findAll();
 }
 
-async function getUserById(id: string): Promise<Model<typeof User>[]> {
+async function getUserByIdFromDB(id: string): Promise<Model<typeof User>[]> {
   return User.findAll({ where: { id: id } });
 }
 
@@ -104,7 +104,7 @@ function generateRefreshToken(payload:  string | object): string {
 }
 
 export {
-  getAutoSuggestUsers, getAllUsers, getUserById, createUser, updateUser, deleteUser, getUserWithCredentials,
+  getAutoSuggestUsers, getAllUsersFromDB, getUserByIdFromDB, createUser, updateUser, deleteUser, getUserWithCredentials,
   getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup, addUsersToGroup, findUsersAtGroup,
   generateAccessToken, generateRefreshToken
 };

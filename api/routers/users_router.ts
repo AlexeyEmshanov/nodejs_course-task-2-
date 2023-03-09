@@ -1,12 +1,22 @@
-import { validator } from "../../data-access/data-access";
+import {User, validator} from "../../data-access/data-access";
 import { querySchemaForSuggestedUser, SuggestedUserSchema } from "../../validation/users_validation/get.suggested-user.schema";
 import { ValidatedRequest } from "express-joi-validation";
 import { bodySchemaForCreatingUser, CreateUserSchema } from "../../validation/users_validation/post.create-user.schema";
 import { bodySchemaForUpdateUser, paramsSchemaForUpdateUser, UpdateUserSchema } from "../../validation/users_validation/put.update-user.schema";
 import app from "../../app/app";
-import { createUser, deleteUser, getAllUsers, getAutoSuggestUsers, getUserById, updateUser } from "../../services";
+import {
+  createUser,
+  deleteUser,
+  getAllUsersFromDB,
+  getAutoSuggestUsers,
+  getUserByIdFromDB,
+  updateUser
+} from "../../services";
 import { GetUserByIdSchema, paramsSchemaForGetUserById } from "../../validation/users_validation/get.user.schema";
 import { NextFunction } from "express";
+import {IUser} from "../../types/user_type";
+import {Model} from "sequelize";
+import {getUserByIDController} from "../controllers/users_controller";
 
 app.get('/users', async (req, res, next: NextFunction) => {
   try {
@@ -16,7 +26,7 @@ app.get('/users', async (req, res, next: NextFunction) => {
     //To simulate unexpected exception in middleware
     // throw new Error('Unexpected exception in middleware happened');
 
-    const usersFromDB = await getAllUsers();
+    const usersFromDB = await getAllUsersFromDB();
 
     if (usersFromDB.length) {
       res.json(usersFromDB);
@@ -31,20 +41,30 @@ app.get('/users', async (req, res, next: NextFunction) => {
   }
 });
 
-app.get('/users/:id', validator.params(paramsSchemaForGetUserById), async (req: ValidatedRequest<GetUserByIdSchema>, res, next: NextFunction) => {
-  try {
-    const requestedUserFromDB = await getUserById(req.params.id);
-    if (requestedUserFromDB.length) {
-      res.json(requestedUserFromDB);
-    } else {
-      res.status(404)
-        .json({message: `User with id ${req.params.id} not found`})
-    }
-  }
-  catch (err) {
-    next(err)
-  }
-});
+//MY BLOCK
+app.get('/users/:id', validator.params(paramsSchemaForGetUserById), getUserByIDController);
+
+//REFACTOR
+// app.get('/users/:id', validator.params(paramsSchemaForGetUserById), async (req: ValidatedRequest<GetUserByIdSchema>, res, next: NextFunction) => {
+//   try {
+//     const requestedUserFromDB = await getUserById(req.params.id);
+//     if (requestedUserFromDB.length) {
+//       res.json(requestedUserFromDB);
+//     } else {
+//       res.status(404)
+//         .json({message: `User with id ${req.params.id} not found`})
+//     }
+//   }
+//   catch (err) {
+//     next(err)
+//   }
+// });
+
+
+
+// test, when DB is empty ...
+// users = await foo({ id: 123 }, () => { return Promise.new([]); });
+// expect(users.length).to.be(0);
 
 app.get('/search', validator.query(querySchemaForSuggestedUser), async (req: ValidatedRequest<SuggestedUserSchema>, res, next: NextFunction) => {
   try {
