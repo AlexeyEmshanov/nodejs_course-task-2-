@@ -2,7 +2,7 @@ import app from "../../app/app";
 import {validator} from "../../data-access/data-access";
 import {AuthUserSchema, bodySchemaForUserAuthorziation} from "../../validation/auth_validation/post.auth.schema";
 import {ValidatedRequest} from "express-joi-validation";
-import {generateAccessToken, generateRefreshToken, getUserWithCredentials} from "../../services";
+import services from "../../services";
 import jwt from 'jsonwebtoken';
 
 //Middlewares for root routes
@@ -16,12 +16,12 @@ app.get('/', (req, res, next) => {
 
 app.post('/login', validator.body(bodySchemaForUserAuthorziation), async (req: ValidatedRequest<AuthUserSchema>, res) => {
   // TODO: how to make appropriate type to model
-  const userWithCredentials = await getUserWithCredentials(req.body.login, req.body.password);
+  const userWithCredentials = await services.getUserWithCredentials(req.body.login, req.body.password);
 
   if (userWithCredentials.length) {
     const payload = {"sub": userWithCredentials[0].get('id')};
-    const accessToken = generateAccessToken(payload);
-    const refreshToken = generateRefreshToken(payload);
+    const accessToken = services.generateAccessToken(payload);
+    const refreshToken = services.generateRefreshToken(payload);
 
     res.status(201).json({accessToken, refreshToken});
   } else {
@@ -38,8 +38,8 @@ app.post('/refresh', async (req, res) => {
         res.status(403).json({message: "Provided refresh token is invalid!"})
       } else {
         const payload = {"sub": decoded?.sub};
-        const accessToken = generateAccessToken(payload);
-        const refreshToken = generateRefreshToken(payload);
+        const accessToken = services.generateAccessToken(payload);
+        const refreshToken = services.generateRefreshToken(payload);
         res.status(201).json({accessToken, refreshToken});
       }
     });

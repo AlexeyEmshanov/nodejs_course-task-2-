@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --silent",
     "build": "npx tsc",
     "compile": "npx tsc && node dist/app/index.js",
     "execute_initial_db_script": "psql -f scripts/init_db.sql \"postgresql://postgres:password1@localhost\"",

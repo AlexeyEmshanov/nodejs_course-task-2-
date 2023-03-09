@@ -4,19 +4,15 @@ import { ValidatedRequest } from "express-joi-validation";
 import { bodySchemaForCreatingUser, CreateUserSchema } from "../../validation/users_validation/post.create-user.schema";
 import { bodySchemaForUpdateUser, paramsSchemaForUpdateUser, UpdateUserSchema } from "../../validation/users_validation/put.update-user.schema";
 import app from "../../app/app";
-import {
-  createUser,
-  deleteUser,
-  getAllUsersFromDB,
-  getAutoSuggestUsers,
-  getUserByIdFromDB,
-  updateUser
-} from "../../services";
+import services, {App_Services_Type} from "../../services";
 import { GetUserByIdSchema, paramsSchemaForGetUserById } from "../../validation/users_validation/get.user.schema";
 import { NextFunction } from "express";
 import {IUser} from "../../types/user_type";
 import {Model} from "sequelize";
-import {getUserByIDController} from "../controllers/users_controller";
+import makeUserController, {Users_Controller_Type} from "../controllers/users_controller";
+
+const controller: Users_Controller_Type = makeUserController(services);
+
 
 app.get('/users', async (req, res, next: NextFunction) => {
   try {
@@ -26,7 +22,7 @@ app.get('/users', async (req, res, next: NextFunction) => {
     //To simulate unexpected exception in middleware
     // throw new Error('Unexpected exception in middleware happened');
 
-    const usersFromDB = await getAllUsersFromDB();
+    const usersFromDB = await services.getAllUsersFromDB();
 
     if (usersFromDB.length) {
       res.json(usersFromDB);
@@ -42,7 +38,7 @@ app.get('/users', async (req, res, next: NextFunction) => {
 });
 
 //MY BLOCK
-app.get('/users/:id', validator.params(paramsSchemaForGetUserById), getUserByIDController);
+app.get('/users/:id', validator.params(paramsSchemaForGetUserById), controller.getUserByIDController);
 
 //REFACTOR
 // app.get('/users/:id', validator.params(paramsSchemaForGetUserById), async (req: ValidatedRequest<GetUserByIdSchema>, res, next: NextFunction) => {
@@ -70,7 +66,7 @@ app.get('/search', validator.query(querySchemaForSuggestedUser), async (req: Val
   try {
     const searchSubstring = req.query.loginSubstring;
     const numberOfSearchEntity = req.query.limit;
-    const result = await getAutoSuggestUsers(searchSubstring, numberOfSearchEntity);
+    const result = await services.getAutoSuggestUsers(searchSubstring, numberOfSearchEntity);
 
     if (result.length > 0) {
       res.send(result)
@@ -90,7 +86,7 @@ app.get('/search', validator.query(querySchemaForSuggestedUser), async (req: Val
 
 app.post('/users', validator.body(bodySchemaForCreatingUser), async (req: ValidatedRequest<CreateUserSchema>, res, next) => {
   try {
-    const createdUser = await createUser({ ...req.body });
+    const createdUser = await services.createUser({ ...req.body });
 
     if (createdUser) {
       res.status(201)
@@ -111,7 +107,7 @@ app.put('/users/:id', validator.params(paramsSchemaForUpdateUser), validator.bod
   try {
     const newUserStateToUpdate = {...req.body};
     const userToUpdateID = req.params.id;
-    const successfullyUpdatesCounter = await updateUser(newUserStateToUpdate, userToUpdateID);
+    const successfullyUpdatesCounter = await services.updateUser(newUserStateToUpdate, userToUpdateID);
 
     if (successfullyUpdatesCounter[0] > 0) {
       res.json({message: `User with ID: ${userToUpdateID} was successfully updated!`}).status(200);
@@ -128,7 +124,7 @@ app.put('/users/:id', validator.params(paramsSchemaForUpdateUser), validator.bod
 
 app.delete('/users/:id', validator.params(paramsSchemaForGetUserById), async (req: ValidatedRequest<GetUserByIdSchema>, res, next) => {
   try {
-    const successfullyDeletedCounter = await deleteUser(req.params.id);
+    const successfullyDeletedCounter = await services.deleteUser(req.params.id);
 
     if (successfullyDeletedCounter[0] > 0) {
       res.json({message: `User with ID: ${req.params.id} was successfully deleted!`})

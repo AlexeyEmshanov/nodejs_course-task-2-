@@ -29,6 +29,7 @@ async function getAllUsersFromDB(): Promise<Model<typeof User>[]> {
 }
 
 async function getUserByIdFromDB(id: string): Promise<Model<typeof User>[]> {
+  console.log('Origin Function started')
   return User.findAll({ where: { id: id } });
 }
 
@@ -103,7 +104,46 @@ function generateRefreshToken(payload:  string | object): string {
   return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET_KEY_FOR_JWT as string, {expiresIn: 300});
 }
 
-export {
+
+export type App_Services_Type = {
+  getAutoSuggestUsers: typeof getAutoSuggestUsers,
+  getAllUsersFromDB: typeof getAllUsersFromDB,
+  getUserByIdFromDB: typeof getUserByIdFromDB,
+  createUser: typeof createUser,
+  updateUser: typeof updateUser,
+  deleteUser: typeof deleteUser,
+  getUserWithCredentials: typeof getUserWithCredentials,
+  getAllGroups: typeof getAllGroups,
+  getGroupById: typeof getGroupById,
+  createGroup: typeof createGroup,
+  updateGroup: typeof updateGroup,
+  deleteGroup: typeof deleteGroup,
+  addUsersToGroup: typeof addUsersToGroup,
+  findUsersAtGroup: typeof findUsersAtGroup,
+  generateAccessToken: typeof generateAccessToken,
+  generateRefreshToken: typeof generateRefreshToken
+}
+
+// const x: App_Services_Type= {
+//   getAutoSuggestUsers,
+//   getAllUsersFromDB,
+//   getUserByIdFromDB,
+//   createUser,
+//   updateUser,
+//   deleteUser,
+//   getUserWithCredentials,
+//   getAllGroups,
+//   getGroupById,
+//   createGroup,
+//   updateGroup,
+//   deleteGroup,
+//   addUsersToGroup,
+//   findUsersAtGroup,
+//   generateAccessToken,
+//   generateRefreshToken
+// }
+
+export default {
   getAutoSuggestUsers, getAllUsersFromDB, getUserByIdFromDB, createUser, updateUser, deleteUser, getUserWithCredentials,
   getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup, addUsersToGroup, findUsersAtGroup,
   generateAccessToken, generateRefreshToken

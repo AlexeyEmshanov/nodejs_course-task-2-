@@ -1,12 +1,13 @@
 import app from '../../app/app';
-import {
-  createGroup,
-  deleteGroup,
-  getAllGroups,
-  getGroupById,
-  updateGroup,
-  addUsersToGroup, findUsersAtGroup
-} from '../../services';
+// import {
+//   createGroup,
+//   deleteGroup,
+//   getAllGroups,
+//   getGroupById,
+//   updateGroup,
+//   addUsersToGroup, findUsersAtGroup
+// } from '../../services';
+import services from "../../services";
 import { validator } from "../../data-access/data-access";
 import { ValidatedRequest} from "express-joi-validation";
 import { GetGroupByIdSchema, paramsSchemaForGetGroupById } from "../../validation/groups_validation/get.group.schema";
@@ -22,7 +23,7 @@ app.get('/groups', async (req, res, next) => {
     }).then(() => {throw new Error('Promise Rejection Error happened')});
     // .catch(err => console.log('It is catch promise block', err));
 
-    const groupsFromDB = await getAllGroups();
+    const groupsFromDB = await services.getAllGroups();
 
     if (groupsFromDB.length) {
       res.json(groupsFromDB);
@@ -39,7 +40,7 @@ app.get('/groups', async (req, res, next) => {
 
 app.get('/groups/:id', validator.params(paramsSchemaForGetGroupById), async (req: ValidatedRequest<GetGroupByIdSchema>, res, next: NextFunction) => {
   try {
-    const requestedUserFromDB = await getGroupById(req.params.id);
+    const requestedUserFromDB = await services.getGroupById(req.params.id);
     if (requestedUserFromDB.length) {
       res.json(requestedUserFromDB);
     } else {
@@ -55,7 +56,7 @@ app.get('/groups/:id', validator.params(paramsSchemaForGetGroupById), async (req
 
 app.post('/groups', validator.body(bodySchemaForCreatingGroup), async (req: ValidatedRequest<CreateGroupSchema>, res, next) => {
   try {
-    const createdGroup = await createGroup({ ...req.body });
+    const createdGroup = await services.createGroup({ ...req.body });
 
     if (createdGroup) {
       res.status(201)
@@ -76,7 +77,7 @@ app.put('/groups/:id', validator.params(paramsSchemaForUpdateGroup), validator.b
     const newGroupStateToUpdate = {...req.body};
     const groupToUpdateID = req.params.id;
 
-    const successfullyUpdatesCounter = await updateGroup(newGroupStateToUpdate, groupToUpdateID);
+    const successfullyUpdatesCounter = await services.updateGroup(newGroupStateToUpdate, groupToUpdateID);
 
     if (successfullyUpdatesCounter[0] > 0) {
       res.json({message: `Group with ID: ${groupToUpdateID} was successfully updated!`}).status(200);
@@ -93,7 +94,7 @@ app.put('/groups/:id', validator.params(paramsSchemaForUpdateGroup), validator.b
 
 app.delete('/groups/:id', validator.params(paramsSchemaForGetGroupById), async (req: ValidatedRequest<GetGroupByIdSchema>, res, next) => {
   try {
-    const successfullyDeletedCounter = await deleteGroup(req.params.id);
+    const successfullyDeletedCounter = await services.deleteGroup(req.params.id);
 
     if (successfullyDeletedCounter > 0) {
       res.json({message: `User with ID: ${req.params.id} was successfully deleted!`})
@@ -111,8 +112,8 @@ app.delete('/groups/:id', validator.params(paramsSchemaForGetGroupById), async (
 //Create two records in UserGroups table for addUsersToGroup() method testing
 app.get('/many', async (req, res, next) => {
   try {
-    await addUsersToGroup('0db8327d-fa5f-482c-9023-e6476eb3402a', '77098ffa-cfc2-428a-a9eb-ce064b918b92');
-    await addUsersToGroup('0db8327d-fa5f-482c-9023-e6476eb3402a', '7c655945-f3e6-4beb-80b9-188c896b3066');
+    await services.addUsersToGroup('0db8327d-fa5f-482c-9023-e6476eb3402a', '77098ffa-cfc2-428a-a9eb-ce064b918b92');
+    await services.addUsersToGroup('0db8327d-fa5f-482c-9023-e6476eb3402a', '7c655945-f3e6-4beb-80b9-188c896b3066');
 
     res.json({message: "Test records with addUsersToGroup() method created"});
   }
@@ -124,7 +125,7 @@ app.get('/many', async (req, res, next) => {
 
 app.get('/usersFromGroup', async (req, res) => {
   try {
-    const usersAtGroup = await findUsersAtGroup('0db8327d-fa5f-482c-9023-e6476eb3402a');
+    const usersAtGroup = await services.findUsersAtGroup('0db8327d-fa5f-482c-9023-e6476eb3402a');
     res.json({message: `There are following users at ${usersAtGroup[0].get('name')} group`, foundedUserAtGroup: usersAtGroup[0].get('Users')});
   }
   catch {
