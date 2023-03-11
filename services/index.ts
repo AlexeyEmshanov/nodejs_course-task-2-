@@ -33,7 +33,8 @@ async function getUserByIdFromDB(id: string): Promise<Model<typeof User>[]> {
   return User.findAll({ where: { id: id } });
 }
 
-async function createUser(user: IUser): Promise<Model<typeof User>> {
+async function createUserAtDB(user: IUser): Promise<Model<typeof User>> {
+  console.log('ATTENTION ', await User.create(user))
   return User.create(user);
 }
 
@@ -109,7 +110,7 @@ export type App_Services_Type = {
   getAutoSuggestUsers: typeof getAutoSuggestUsers,
   getAllUsersFromDB: typeof getAllUsersFromDB,
   getUserByIdFromDB: typeof getUserByIdFromDB,
-  createUser: typeof createUser,
+  createUserAtDB: typeof createUserAtDB,
   updateUser: typeof updateUser,
   deleteUser: typeof deleteUser,
   getUserWithCredentials: typeof getUserWithCredentials,
@@ -144,7 +145,7 @@ export type App_Services_Type = {
 // }
 
 export default {
-  getAutoSuggestUsers, getAllUsersFromDB, getUserByIdFromDB, createUser, updateUser, deleteUser, getUserWithCredentials,
+  getAutoSuggestUsers, getAllUsersFromDB, getUserByIdFromDB, createUserAtDB, updateUser, deleteUser, getUserWithCredentials,
   getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup, addUsersToGroup, findUsersAtGroup,
   generateAccessToken, generateRefreshToken
 };

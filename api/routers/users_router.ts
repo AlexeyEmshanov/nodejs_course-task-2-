@@ -11,97 +11,16 @@ import {IUser} from "../../types/user_type";
 import {Model} from "sequelize";
 import makeUserController, {Users_Controller_Type} from "../controllers/users_controller";
 
-const controller: Users_Controller_Type = makeUserController(services);
+const userController: Users_Controller_Type = makeUserController(services);
 
+app.get('/users', userController.getAllUsersControllerMethod);
 
-app.get('/users', async (req, res, next: NextFunction) => {
-  try {
-    //To simulate uncaught exception
-    // setTimeout(() => { throw new Error('Uncaught async exception happened') }, 1000);
+app.get('/users/:id', validator.params(paramsSchemaForGetUserById), userController.getUserByIDControllerMethod);
 
-    //To simulate unexpected exception in middleware
-    // throw new Error('Unexpected exception in middleware happened');
-
-    const usersFromDB = await services.getAllUsersFromDB();
-
-    if (usersFromDB.length) {
-      res.json(usersFromDB);
-    } else {
-      res.status(404)
-        .json({message: `No users at database`})
-    }
-  }
-
-  catch (err) {
-    next(err);
-  }
-});
-
-//MY BLOCK
-app.get('/users/:id', validator.params(paramsSchemaForGetUserById), controller.getUserByIDController);
-
-//REFACTOR
-// app.get('/users/:id', validator.params(paramsSchemaForGetUserById), async (req: ValidatedRequest<GetUserByIdSchema>, res, next: NextFunction) => {
-//   try {
-//     const requestedUserFromDB = await getUserById(req.params.id);
-//     if (requestedUserFromDB.length) {
-//       res.json(requestedUserFromDB);
-//     } else {
-//       res.status(404)
-//         .json({message: `User with id ${req.params.id} not found`})
-//     }
-//   }
-//   catch (err) {
-//     next(err)
-//   }
-// });
+app.post('/users', validator.body(bodySchemaForCreatingUser), userController.createUserControllerMethod);
 
 
 
-// test, when DB is empty ...
-// users = await foo({ id: 123 }, () => { return Promise.new([]); });
-// expect(users.length).to.be(0);
-
-app.get('/search', validator.query(querySchemaForSuggestedUser), async (req: ValidatedRequest<SuggestedUserSchema>, res, next: NextFunction) => {
-  try {
-    const searchSubstring = req.query.loginSubstring;
-    const numberOfSearchEntity = req.query.limit;
-    const result = await services.getAutoSuggestUsers(searchSubstring, numberOfSearchEntity);
-
-    if (result.length > 0) {
-      res.send(result)
-    } else {
-      res.status(400)
-        .json({ message: `Users with substring \u201c${searchSubstring}\u201c at login doesn't exist at data base.`})
-    }
-  }
-
-  catch (err: any) {
-    err.testData = {
-
-    };
-    next(err);
-  }
-});
-
-app.post('/users', validator.body(bodySchemaForCreatingUser), async (req: ValidatedRequest<CreateUserSchema>, res, next) => {
-  try {
-    const createdUser = await services.createUser({ ...req.body });
-
-    if (createdUser) {
-      res.status(201)
-        .json({message: `User was successfully created with ID ${createdUser.get('id')}!`})
-    } else {
-      res.status(400)
-        .json({message: "In the process of User creation something went wrong..."})
-    }
-  }
-
-  catch (err) {
-    next(err)
-  }
-
-});
 
 app.put('/users/:id', validator.params(paramsSchemaForUpdateUser), validator.body(bodySchemaForUpdateUser),  async (req: ValidatedRequest<UpdateUserSchema>, res, next) => {
   try {
@@ -138,4 +57,27 @@ app.delete('/users/:id', validator.params(paramsSchemaForGetUserById), async (re
     next(err);
   }
 });
+
+app.get('/search', validator.query(querySchemaForSuggestedUser), async (req: ValidatedRequest<SuggestedUserSchema>, res, next: NextFunction) => {
+  try {
+    const searchSubstring = req.query.loginSubstring;
+    const numberOfSearchEntity = req.query.limit;
+    const result = await services.getAutoSuggestUsers(searchSubstring, numberOfSearchEntity);
+
+    if (result.length > 0) {
+      res.send(result)
+    } else {
+      res.status(400)
+        .json({ message: `Users with substring \u201c${searchSubstring}\u201c at login doesn't exist at data base.`})
+    }
+  }
+
+  catch (err: any) {
+    err.testData = {
+
+    };
+    next(err);
+  }
+});
+
 
