@@ -2,11 +2,12 @@ import {DataTypes, Sequelize, TEXT} from "sequelize";
 import {createValidator} from "express-joi-validation";
 
 //DB Connection
-// const sequelize = new Sequelize('postgres://postgres:password1@localhost:5432/postgres', { dialect: "postgres" });
+// const sequelize = new Sequelize(process.env.CONNECTION_STRING_VARIABLE as string , { dialect: "postgres", logging: false });
 const sequelize = new Sequelize({
-  database: 'postgres',
-  username: 'postgres',
-  password: 'password1',
+  database: process.env.DATABASE_VARIABLE,
+  username: process.env.USERNAME_VARIABLE,
+  password: process.env.PASSWORD_VARIABLE,
+  port: Number(process.env.PORT_VARIABLE),
   dialect: 'postgres',
   logging: false
 });
