@@ -5,7 +5,7 @@ import { bodySchemaForUpdateUser, paramsSchemaForUpdateUser } from "../../valida
 import app from "../../app/app";
 import services from "../../services";
 import { paramsSchemaForGetUserById } from "../../validation/users_validation/get.user.schema";
-import makeUserController, {Users_Controller_Type} from "../controllers/users_controller";
+import makeUserController, { Users_Controller_Type } from "../controllers/users_controller";
 
 const userController: Users_Controller_Type = makeUserController(services);
 

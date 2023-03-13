@@ -1,11 +1,10 @@
-import {NextFunction, Request, Response} from "express";
-
-import {ValidatedRequest} from "express-joi-validation";
-import {GetUserByIdSchema} from "../../validation/users_validation/get.user.schema";
-import services, {App_Services_Type} from "../../services";
-import {CreateUserSchema} from "../../validation/users_validation/post.create-user.schema";
-import {UpdateUserSchema} from "../../validation/users_validation/put.update-user.schema";
-import {SuggestedUserSchema} from "../../validation/users_validation/get.suggested-user.schema";
+import { NextFunction, Response } from "express";
+import { ValidatedRequest } from "express-joi-validation";
+import { GetUserByIdSchema } from "../../validation/users_validation/get.user.schema";
+import services, { App_Services_Type } from "../../services";
+import { CreateUserSchema } from "../../validation/users_validation/post.create-user.schema";
+import { UpdateUserSchema } from "../../validation/users_validation/put.update-user.schema";
+import { SuggestedUserSchema } from "../../validation/users_validation/get.suggested-user.schema";
 
 export type Users_Controller_Type = {
   getUserByIDControllerMethod: typeof getUserByIDControllerMethod,

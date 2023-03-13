@@ -48,3 +48,30 @@ app.post('/refresh', async (req, res) => {
   }
 });
 
+
+//For many-to-many testing purposes
+//Create two records in UserGroups table for addUsersToGroup() method testing
+app.get('/many', async (req, res, next) => {
+  try {
+    await services.addUsersToGroup('0db8327d-fa5f-482c-9023-e6476eb3402a', '77098ffa-cfc2-428a-a9eb-ce064b918b92');
+    await services.addUsersToGroup('0db8327d-fa5f-482c-9023-e6476eb3402a', '7c655945-f3e6-4beb-80b9-188c896b3066');
+
+    res.json({message: "Test records with addUsersToGroup() method created"});
+  }
+
+  catch (err) {
+    next(err);
+  }
+});
+
+app.get('/usersFromGroup', async (req, res) => {
+  try {
+    const usersAtGroup = await services.findUsersAtGroup('0db8327d-fa5f-482c-9023-e6476eb3402a');
+    res.json({message: `There are following users at ${usersAtGroup[0].get('name')} group`, foundedUserAtGroup: usersAtGroup[0].get('Users')});
+  }
+  catch {
+    res.status(400)
+      .json({message: `Unfortunately there are no users belongs to requested group`});
+  }
+});
+

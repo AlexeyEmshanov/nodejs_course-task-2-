@@ -1,3 +1,3 @@
 import './root_router';
 import './users_router';
-import './group_router';
+import './groups_router';

@@ -29,12 +29,10 @@ async function getAllUsersFromDB(): Promise<Model<typeof User>[]> {
 }
 
 async function getUserByIdFromDB(id: string): Promise<Model<typeof User>[]> {
-  console.log('Origin Function started')
   return User.findAll({ where: { id: id } });
 }
 
 async function createUserAtDB(user: IUser): Promise<Model<typeof User>> {
-  console.log('ATTENTION ', await User.create(user))
   return User.create(user);
 }
 
@@ -55,23 +53,23 @@ async function getUserWithCredentials(login: string, password: string): Promise<
 
 
 //GROUP SERVICES
-async function getAllGroups(): Promise<Model<typeof Group>[]> {
+async function getAllGroupsFromDB(): Promise<Model<typeof Group>[]> {
   return Group.findAll();
 }
 
-async function getGroupById(id: string): Promise<Model<typeof Group>[]> {
+async function getGroupByIdFromDB(id: string): Promise<Model<typeof Group>[]> {
   return Group.findAll({ where: { id: id } });
 }
 
-async function createGroup(group: IGroup): Promise<Model<typeof Group>> {
+async function createGroupAtDB(group: IGroup): Promise<Model<typeof Group>> {
   return Group.create(group);
 }
 
-async function updateGroup(group: IGroup, id: string): Promise<[affectedCount: number]> {
+async function updateGroupAtDB(group: IGroup, id: string): Promise<[affectedCount: number]> {
   return Group.update(group, { where: { id: id}});
 }
 
-async function deleteGroup(id: string): Promise<number> {
+async function deleteGroupAtDB(id: string): Promise<number> {
   return Group.destroy({
     where: {id: id},
     force: true
@@ -114,11 +112,11 @@ export type App_Services_Type = {
   updateUserAtDB: typeof updateUserAtDB,
   deleteUserAtDB: typeof deleteUserAtDB,
   getUserWithCredentials: typeof getUserWithCredentials,
-  getAllGroups: typeof getAllGroups,
-  getGroupById: typeof getGroupById,
-  createGroup: typeof createGroup,
-  updateGroup: typeof updateGroup,
-  deleteGroup: typeof deleteGroup,
+  getAllGroupsFromDB: typeof getAllGroupsFromDB,
+  getGroupByIdFromDB: typeof getGroupByIdFromDB,
+  createGroupAtDB: typeof createGroupAtDB,
+  updateGroupAtDB: typeof updateGroupAtDB,
+  deleteGroupAtDB: typeof deleteGroupAtDB,
   addUsersToGroup: typeof addUsersToGroup,
   findUsersAtGroup: typeof findUsersAtGroup,
   generateAccessToken: typeof generateAccessToken,
@@ -127,6 +125,6 @@ export type App_Services_Type = {
 
 export default {
   getAutoSuggestUsersFromDB, getAllUsersFromDB, getUserByIdFromDB, createUserAtDB, updateUserAtDB, deleteUserAtDB, getUserWithCredentials,
-  getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup, addUsersToGroup, findUsersAtGroup,
+  getAllGroupsFromDB, getGroupByIdFromDB, createGroupAtDB, updateGroupAtDB, deleteGroupAtDB, addUsersToGroup, findUsersAtGroup,
   generateAccessToken, generateRefreshToken
 };

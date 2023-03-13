@@ -1,6 +1,6 @@
-import {NextFunction, Request, Response} from "express";
-import {ValidatedRequest} from "express-joi-validation";
-import {GetUserByIdSchema} from "../validation/users_validation/get.user.schema";
+import { Response } from "express";
+import { ValidatedRequest } from "express-joi-validation";
+import { GetUserByIdSchema } from "../validation/users_validation/get.user.schema";
 import services from "../services";
 import makeUserController, {Users_Controller_Type} from "../api/controllers/users_controller";
 import {sequelize} from "../data-access/data-access";
@@ -72,7 +72,7 @@ const existedUserFromDB = allUsersAtDB[0];
 
 const mockErr = new Error('Mock error');
 
-describe('Testing User Controller', () => {
+describe('Testing Users Controller', () => {
 
   describe('Testing GET on /users path with getUsers', () => {
     //Block for mocking special condition for Response, Request
@@ -85,7 +85,7 @@ describe('Testing User Controller', () => {
       expect(response.status).toHaveBeenCalledWith(200);
     })
 
-    test('It should send a the array of JSON objects with certain length, with all users at DB', async () => {
+    test('It should send an array of JSON objects with certain length, with all users at DB', async () => {
       (userController.services.getAllUsersFromDB as jest.Mock).mockImplementation(() => allUsersAtDB);
       const users = await userController.services.getAllUsersFromDB()
 
@@ -151,13 +151,13 @@ describe('Testing User Controller', () => {
   })
 
 
-  describe('Testing POST on /users/ path with createUserControllerMethod' , () => {
+  describe('Testing POST on /users path with createUserControllerMethod' , () => {
     //Block for mocking special condition for Response, Request
     const request = {
       body: {
-        "login": "NewUser",
-        "password": "NewUserPassword",
-        "age": 19
+        login: "NewUser",
+        password: "NewUserPassword",
+        age: 19
       },
     } as ValidatedRequest<GetUserByIdSchema>;
 
