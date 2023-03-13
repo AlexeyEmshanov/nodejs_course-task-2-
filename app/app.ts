@@ -18,6 +18,7 @@ const app = express();
 app.use(express.json()); //Body parser for requests
 app.use(cors(corsOption));
 app.use(methodsLogger);
+//TODO: uncomment after finishing with tests
 // app.use(authenticationMiddleware);
 
 //default process.on handling

@@ -30,8 +30,6 @@ const response = {
 
 const next = jest.fn(x => x)
 
-
-
 const allUsersAtDB = [
   {
     id: "77098ffa-cfc2-428a-a9eb-ce064b918b92",
@@ -72,6 +70,8 @@ const allUsersAtDB = [
 
 const existedUserFromDB = allUsersAtDB[0];
 
+const mockErr = new Error('Mock error');
+
 describe('Testing User Controller', () => {
 
   describe('Testing GET on /users path with getUsers', () => {
@@ -103,7 +103,6 @@ describe('Testing User Controller', () => {
     })
 
     test('It should call next function with error object if unexpected error happens', async () => {
-      const mockErr = new Error('Mock error');
       (userController.services.getAllUsersFromDB as jest.Mock).mockImplementation(() => {throw mockErr});
 
       await userController.getAllUsersControllerMethod(request, response, next)
@@ -187,10 +186,137 @@ describe('Testing User Controller', () => {
     })
 
     test('It should call next function with error object if unexpected error happens', async () => {
-      const mockErr = new Error('Mock error');
       (userController.services.createUserAtDB as jest.Mock).mockImplementation(() => {throw mockErr});
 
       await userController.createUserControllerMethod(request, response, next)
+      expect(next).toHaveBeenCalledWith(mockErr);
+    })
+  })
+
+
+  describe('Testing PUT on /users/:id path with updateUserControllerMethod' , () => {
+    //Block for mocking special condition for Response, Request
+    const request = {
+      params: {
+        id: '77098ffa-cfc2-428a-a9eb-ce064b918b92'
+      },
+    } as ValidatedRequest<GetUserByIdSchema>;
+
+    const updatedUserInfo = {
+      login: 'UpdatedUser',
+      age: 55
+    }
+
+    test('It should send a status 200 and certain message if user was successfully updated at DB', async () => {
+      (userController.services.updateUserAtDB as jest.Mock).mockReturnValueOnce([1]);
+
+      await userController.updateUserControllerMethod(request, response, () => {})
+      expect(response.status).toHaveBeenCalledWith(200);
+      expect(response.json).toHaveBeenCalledWith({message: `User with ID: ${request.params.id} was successfully updated!`});
+    })
+
+    test('It should send a status 400 if user was not updated and send particular error message', async () => {
+      (userController.services.updateUserAtDB as jest.Mock).mockReturnValueOnce([0]);
+
+      await userController.updateUserControllerMethod(request, response, () => {})
+      expect(response.status).toHaveBeenCalledWith(400);
+      expect(response.json).toHaveBeenCalledWith({message: `User with ID: ${request.params.id} doesn't exist`});
+    })
+
+    test('It should call next function with error object if unexpected error happens', async () => {
+      (userController.services.updateUserAtDB as jest.Mock).mockImplementation(() => {throw mockErr});
+
+      await userController.updateUserControllerMethod(request, response, next)
+      expect(next).toHaveBeenCalledWith(mockErr);
+    })
+  })
+
+
+  describe('Testing DELETE on /users/:id path with deleteUserControllerMethod' , () => {
+    //Block for mocking special condition for Response, Request
+    const request = {
+      params: {
+        id: '77098ffa-cfc2-428a-a9eb-ce064b918b92'
+      },
+    } as ValidatedRequest<GetUserByIdSchema>;
+
+    test('It should send a status 200 and certain message if user was successfully deleted at DB', async () => {
+      (userController.services.deleteUserAtDB as jest.Mock).mockReturnValueOnce([1]);
+
+      await userController.deleteUserControllerMethod(request, response, () => {})
+      expect(response.status).toHaveBeenCalledWith(200);
+      expect(response.json).toHaveBeenCalledWith({message: `User with ID: ${request.params.id} was successfully deleted!`});
+    })
+
+    test('It should send a status 400 if user was not deleted and send particular error message', async () => {
+      (userController.services.deleteUserAtDB as jest.Mock).mockReturnValueOnce([0]);
+
+      await userController.deleteUserControllerMethod(request, response, () => {})
+      expect(response.status).toHaveBeenCalledWith(400);
+      expect(response.json).toHaveBeenCalledWith({message: `User with ID: ${request.params.id} doesn't exist. Deleting is impossible!`});
+    })
+
+    test('It should call next function with error object if unexpected error happens', async () => {
+      (userController.services.deleteUserAtDB as jest.Mock).mockImplementation(() => {throw mockErr});
+
+      await userController.deleteUserControllerMethod(request, response, next)
+      expect(next).toHaveBeenCalledWith(mockErr);
+    })
+  })
+
+
+  describe('Testing GET on /search path with searchUserControllerMethod' , () => {
+    //Block for mocking special condition for Response, Request
+    const request = {
+      query: {
+        loginSubstring: 'aleks',
+        limit: 10
+      },
+    } as ValidatedRequest<GetUserByIdSchema>;
+
+    const searchResult = [
+      {
+        "id": "9068ae85-e98e-48e6-9077-8ef27684317c",
+        "login": "Aleksandra",
+        "password": "UserEPassword",
+        "age": 38,
+        "isdeleted": false
+      },
+      {
+        "id": "7c655945-f3e6-4beb-80b9-188c896b3066",
+        "login": "Aleksei",
+        "password": "UserBPassword",
+        "age": 38,
+        "isdeleted": false
+      }
+    ]
+
+    test('It should send a status 200 if suggested results exists at DB', async () => {
+      (userController.services.getAutoSuggestUsersFromDB as jest.Mock).mockReturnValueOnce(searchResult);
+
+      await userController.searchUserControllerMethod(request, response, () => {})
+      expect(response.status).toHaveBeenCalledWith(200);
+    })
+
+    test('It should send an array with suggested users at DB', async () => {
+      (userController.services.getAutoSuggestUsersFromDB as jest.Mock).mockReturnValueOnce(searchResult);
+
+      await userController.searchUserControllerMethod(request, response, () => {})
+      expect(response.json).toHaveBeenCalledWith(searchResult);
+    })
+
+    test('It should send a status 400 if any users with requested substring at login does not exist at DB', async () => {
+      (userController.services.getAutoSuggestUsersFromDB as jest.Mock).mockReturnValueOnce([]);
+
+      await userController.searchUserControllerMethod(request, response, () => {})
+      expect(response.status).toHaveBeenCalledWith(400);
+      expect(response.json).toHaveBeenCalledWith({message: `Users with substring \u201c${request.query.loginSubstring}\u201c at login doesn't exist at data base.`});
+    })
+    //
+    test('It should call next function with error object if unexpected error happens', async () => {
+      (userController.services.getAutoSuggestUsersFromDB as jest.Mock).mockImplementation(() => {throw mockErr});
+
+      await userController.searchUserControllerMethod(request, response, next)
       expect(next).toHaveBeenCalledWith(mockErr);
     })
   })

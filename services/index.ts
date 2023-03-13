@@ -5,7 +5,7 @@ import { IGroup } from "../types/group_type";
 import jwt from "jsonwebtoken";
 
 //USER SERVICES
-async function getAutoSuggestUsers(loginSubstring: string, limit: number) {
+async function getAutoSuggestUsersFromDB(loginSubstring: string, limit: number) {
   const allUsersFromDB = await User.findAll();
   const filteredUsers = allUsersFromDB.filter((user => user.get().login.toLowerCase().includes(loginSubstring.toLowerCase())));
   const sortedUsers = filteredUsers.sort((userA, userB) => sortByLogin(userA.get().login, userB.get().login));
@@ -41,11 +41,11 @@ async function createUserAtDB(user: IUser): Promise<Model<typeof User>> {
 /**
  * TODO: Types. Don't work user: IUser, but with optional fields works well
  */
-async function updateUser(user: IUserWithOptionalFields, id: string): Promise<[affectedCount: number]> {
+async function updateUserAtDB(user: IUserWithOptionalFields, id: string): Promise<[affectedCount: number]> {
   return User.update(user, { where: { id: id}});
 }
 
-async function deleteUser(id: string): Promise<[affectedCount: number]> {
+async function deleteUserAtDB(id: string): Promise<[affectedCount: number]> {
   return User.update( { isdeleted: true }, { where: {id: id}})
 }
 
@@ -107,12 +107,12 @@ function generateRefreshToken(payload:  string | object): string {
 
 
 export type App_Services_Type = {
-  getAutoSuggestUsers: typeof getAutoSuggestUsers,
+  getAutoSuggestUsersFromDB: typeof getAutoSuggestUsersFromDB,
   getAllUsersFromDB: typeof getAllUsersFromDB,
   getUserByIdFromDB: typeof getUserByIdFromDB,
   createUserAtDB: typeof createUserAtDB,
-  updateUser: typeof updateUser,
-  deleteUser: typeof deleteUser,
+  updateUserAtDB: typeof updateUserAtDB,
+  deleteUserAtDB: typeof deleteUserAtDB,
   getUserWithCredentials: typeof getUserWithCredentials,
   getAllGroups: typeof getAllGroups,
   getGroupById: typeof getGroupById,
@@ -125,27 +125,8 @@ export type App_Services_Type = {
   generateRefreshToken: typeof generateRefreshToken
 }
 
-// const x: App_Services_Type= {
-//   getAutoSuggestUsers,
-//   getAllUsersFromDB,
-//   getUserByIdFromDB,
-//   createUser,
-//   updateUser,
-//   deleteUser,
-//   getUserWithCredentials,
-//   getAllGroups,
-//   getGroupById,
-//   createGroup,
-//   updateGroup,
-//   deleteGroup,
-//   addUsersToGroup,
-//   findUsersAtGroup,
-//   generateAccessToken,
-//   generateRefreshToken
-// }
-
 export default {
-  getAutoSuggestUsers, getAllUsersFromDB, getUserByIdFromDB, createUserAtDB, updateUser, deleteUser, getUserWithCredentials,
+  getAutoSuggestUsersFromDB, getAllUsersFromDB, getUserByIdFromDB, createUserAtDB, updateUserAtDB, deleteUserAtDB, getUserWithCredentials,
   getAllGroups, getGroupById, createGroup, updateGroup, deleteGroup, addUsersToGroup, findUsersAtGroup,
   generateAccessToken, generateRefreshToken
 };
