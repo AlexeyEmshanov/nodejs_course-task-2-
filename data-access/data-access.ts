@@ -1,5 +1,8 @@
 import {DataTypes, Sequelize, TEXT} from "sequelize";
 import {createValidator} from "express-joi-validation";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 //DB Connection
 // const sequelize = new Sequelize(process.env.CONNECTION_STRING_VARIABLE as string , { dialect: "postgres", logging: false });
