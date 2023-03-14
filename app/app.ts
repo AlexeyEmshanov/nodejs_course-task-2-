@@ -1,5 +1,4 @@
 import express from "express";
-import * as dotenv from "dotenv";
 import cors from "cors";
 import {
   exceptionHandler,
@@ -8,7 +7,6 @@ import {
 } from "../api/middlewares/error_handlers";
 import {authenticationMiddleware} from "../api/middlewares/authentication";
 
-dotenv.config();
 const corsOption = {
     // origin: ["https://www.example.com"]
 };
