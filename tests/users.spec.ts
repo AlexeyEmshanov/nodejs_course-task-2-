@@ -2,19 +2,7 @@ import { Response } from "express";
 import { ValidatedRequest } from "express-joi-validation";
 import { GetUserByIdSchema } from "../validation/users_validation/get.user.schema";
 import services from "../services";
-import makeUserController, {Users_Controller_Type} from "../api/controllers/users_controller";
-import {sequelize} from "../data-access/data-access";
-
-// beforeAll(done => {
-//   // sequelize.sync()
-//   done()
-// })
-//
-// afterEach(done => {
-//   // Closing the DB connection allows Jest to exit successfully.
-//   sequelize.close().then(() => done())
-//
-// })
+import makeUserController from "../api/controllers/users_controller";
 
 
 //Mocking
